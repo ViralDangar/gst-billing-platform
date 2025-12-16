@@ -1,2 +1,75 @@
-venv
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# ======================
+# Virtual Environment
+# ======================
+venv/
 .env
+.env.*
+!env.example
+
+# ======================
+# Logs
+# ======================
+*.log
+
+# ======================
+# Database / Local State
+# ======================
+*.sqlite3
+*.db
+
+# ======================
+# Alembic
+# ======================
+alembic/versions/__pycache__/
+
+# ======================
+# OS / Editor
+# ======================
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# PyCharm
+.idea/
+
+# ======================
+# Node / Vue (future)
+# ======================
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ======================
+# Docker (local only)
+# ======================
+docker-compose.override.yml
+
+# ======================
+# Coverage / Testing
+# ======================
+.coverage
+htmlcov/
+pytest_cache/
+
+# ======================
+# Secrets
+# ======================
+*.pem
+*.key
