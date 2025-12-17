@@ -60,3 +60,20 @@ def get_invoice(invoice_id: UUID, db: Session = Depends(get_db)):
         **invoice.__dict__,
         "items": items,
     }
+
+from app.billing_service.finalize import finalize_invoice
+from app.billing_service.schemas import InvoiceFinalizeResponse
+
+
+@router.post(
+    "/{invoice_id}/finalize",
+    response_model=InvoiceFinalizeResponse,
+)
+def finalize_invoice_api(
+    invoice_id: UUID,
+    db: Session = Depends(get_db),
+):
+    try:
+        return finalize_invoice(db, invoice_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

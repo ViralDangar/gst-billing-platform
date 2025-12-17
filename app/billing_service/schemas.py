@@ -38,3 +38,9 @@ class InvoiceResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class InvoiceFinalizeResponse(BaseModel):
+    invoice_id: UUID
+    invoice_number: str
+    status: str

@@ -59,7 +59,7 @@ def update_product(
     return service.update_product(db, product, payload)
 
 @customer_router.post(
-    "/customers",
+    "",
     response_model=CustomerResponse,
     status_code=status.HTTP_201_CREATED,
 )
@@ -67,12 +67,12 @@ def create_customer(payload: CustomerCreate, db: Session = Depends(get_db)):
     return service.create_customer(db, payload)
 
 
-@customer_router.get("/customers", response_model=List[CustomerResponse])
+@customer_router.get("", response_model=List[CustomerResponse])
 def list_customers(db: Session = Depends(get_db)):
     return service.list_customers(db)
 
 
-@customer_router.get("/customers/{customer_id}", response_model=CustomerResponse)
+@customer_router.get("/{customer_id}", response_model=CustomerResponse)
 def get_customer(customer_id: UUID, db: Session = Depends(get_db)):
     customer = service.get_customer(db, customer_id)
     if not customer:
@@ -80,7 +80,7 @@ def get_customer(customer_id: UUID, db: Session = Depends(get_db)):
     return customer
 
 
-@customer_router.put("/customers/{customer_id}", response_model=CustomerResponse)
+@customer_router.put("/{customer_id}", response_model=CustomerResponse)
 def update_customer(
     customer_id: UUID,
     payload: CustomerUpdate,
