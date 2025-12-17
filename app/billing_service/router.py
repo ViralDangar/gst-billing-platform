@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from uuid import UUID
+from app.billing_service.finalize import finalize_invoice
+from app.billing_service.schemas import InvoiceFinalizeResponse
+
 
 from app.core.database import get_db
 from app.billing_service import service
@@ -60,9 +63,6 @@ def get_invoice(invoice_id: UUID, db: Session = Depends(get_db)):
         **invoice.__dict__,
         "items": items,
     }
-
-from app.billing_service.finalize import finalize_invoice
-from app.billing_service.schemas import InvoiceFinalizeResponse
 
 
 @router.post(

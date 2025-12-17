@@ -1,6 +1,6 @@
 import uuid
 from sqlalchemy import Column, String, Text, TIMESTAMP, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID , JSONB
 from sqlalchemy.sql import func
 
 from app.core.database import Base
@@ -14,7 +14,7 @@ class Company(Base):
     name = Column(Text, nullable=False)
     address = Column(Text, nullable=False)
     logo_url = Column(Text)
-    default_bank_details = Column(Text)
+    default_bank_details = Column(JSONB)
     created_at = Column(TIMESTAMP, server_default=func.now())
 
 
