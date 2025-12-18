@@ -1,13 +1,13 @@
 from pydantic import BaseModel, Field
 from uuid import UUID
-from typing import List
+from typing import List, Optional
 from datetime import date
 from decimal import Decimal
 
 
 class InvoiceCreate(BaseModel):
     invoice_date: date
-    gstin_id: UUID
+    gstin_id: Optional[UUID] = None
     customer_id: UUID
 
 
@@ -31,7 +31,7 @@ class InvoiceItemResponse(BaseModel):
 class InvoiceResponse(BaseModel):
     id: UUID
     invoice_date: date
-    gstin_id: UUID
+    gstin_id: Optional[UUID] = None
     customer_id: UUID
     status: str
     items: List[InvoiceItemResponse]

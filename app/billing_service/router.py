@@ -20,7 +20,7 @@ def billing_health():
     return {"service": "billing", "status": "ok"}
 
 @router.post(
-    "",
+    "/",
     response_model=InvoiceResponse,
     status_code=status.HTTP_201_CREATED,
 )
@@ -65,6 +65,9 @@ def get_invoice(invoice_id: UUID, db: Session = Depends(get_db)):
     }
 
 
+@router.get("/")
+def list_invoices(db: Session = Depends(get_db)):
+    return service.get_invoices(db)
 @router.post(
     "/{invoice_id}/finalize",
     response_model=InvoiceFinalizeResponse,

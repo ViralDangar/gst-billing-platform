@@ -10,7 +10,7 @@ class InvoiceSequence(Base):
     __table_args__ = {"schema": "billing"}
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    gstin_id = Column(UUID(as_uuid=True), nullable=False)
+    # gstin_id = Column(UUID(as_uuid=True), nullable=False)
     financial_year = Column(String(9), nullable=False)
     last_sequence = Column(Integer, default=0)
 

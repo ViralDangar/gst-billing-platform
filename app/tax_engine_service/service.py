@@ -17,11 +17,18 @@ def calculate_gst(db: Session, invoice_id: UUID):
     if invoice.status != "DRAFT":
         raise ValueError("GST can be calculated only for DRAFT invoices")
 
+    if not invoice.gstin_id:
+        raise ValueError("Invoice does not have a GSTIN associated")
+
     # Fetch seller GSTIN
     seller_gstin = db.query(GSTIN).filter(GSTIN.id == invoice.gstin_id).first()
+    if not seller_gstin:
+        raise ValueError("Seller GSTIN not found")
 
     # Fetch customer
     customer = db.query(Customer).filter(Customer.id == invoice.customer_id).first()
+    if not customer:
+        raise ValueError("Customer not found")
 
     items = (
         db.query(InvoiceItem)
