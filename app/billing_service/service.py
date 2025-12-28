@@ -56,6 +56,7 @@ def create_invoice(db: Session, payload: InvoiceCreate) -> Invoice:
             invoice_date=payload.invoice_date,
             gstin_id=gstin_id,
             customer_id=payload.customer_id,
+            po_number=payload.po_number,
             status="DRAFT",
         )
 

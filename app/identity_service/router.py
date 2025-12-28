@@ -117,6 +117,41 @@ def get_company(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="An unexpected error occurred")
 
 
+@router.get("/company/with-gstin")
+def get_company_with_gstin(db: Session = Depends(get_db)):
+    """
+    Retrieve company with GSTIN details for UI forms.
+
+    Returns company details with the first GSTIN and flattened bank details
+    matching the UI form structure (with fields like phone, email, gstin, pan, etc).
+
+    Args:
+        db: Database session
+
+    Returns:
+        dict: Combined company and GSTIN details
+
+    Raises:
+        HTTPException 404: If company not found
+        HTTPException 500: If database operation fails
+    """
+    try:
+        logger.info("Retrieving company with GSTIN details")
+        company_data = service.get_company_with_gstin(db)
+        if not company_data:
+            raise HTTPException(status_code=404, detail="Company not found")
+        return company_data
+
+    except HTTPException:
+        raise
+    except SQLAlchemyError as e:
+        logger.error(f"Database error retrieving company with GSTIN: {str(e)}")
+        raise HTTPException(status_code=500, detail="Database error occurred")
+    except Exception as e:
+        logger.error(f"Unexpected error retrieving company with GSTIN: {str(e)}")
+        raise HTTPException(status_code=500, detail="An unexpected error occurred")
+
+
 @router.put("/company", response_model=CompanyResponse)
 def update_company(
     payload: CompanyUpdate,

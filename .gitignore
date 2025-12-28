@@ -33,7 +33,7 @@ venv/
 # Alembic
 # ======================
 alembic/versions/__pycache__/
-
+sample
 # ======================
 # OS / Editor
 # ======================

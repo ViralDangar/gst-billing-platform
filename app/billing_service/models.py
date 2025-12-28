@@ -24,6 +24,7 @@ class Invoice(Base):
     invoice_date = Column(DATE, nullable=False)
     gstin_id = Column(UUID(as_uuid=True), ForeignKey("identity.gstin.id"))
     customer_id = Column(UUID(as_uuid=True), ForeignKey("master_data.customer.id"))
+    po_number = Column(String(50), nullable=True)  # Purchase Order Number
     status = Column(String(10))
     taxable_total = Column(NUMERIC(14, 2))
     tax_total = Column(NUMERIC(14, 2))

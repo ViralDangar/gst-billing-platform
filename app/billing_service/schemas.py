@@ -9,6 +9,7 @@ class InvoiceCreate(BaseModel):
     invoice_date: date
     gstin_id: Optional[UUID] = None
     customer_id: UUID
+    po_number:Optional[str] = ""
 
 
 class InvoiceItemCreate(BaseModel):
@@ -33,6 +34,7 @@ class InvoiceResponse(BaseModel):
     invoice_date: date
     gstin_id: Optional[UUID] = None
     customer_id: UUID
+    po_number: Optional[str] = None
     status: str
     items: List[InvoiceItemResponse]
 

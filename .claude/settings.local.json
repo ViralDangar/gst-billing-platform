@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m alembic:*)",
+      "Bash(alembic upgrade:*)",
+      "Bash(python -m alembic.config:*)",
+      "Bash(python -c:*)",
+      "Bash(where:*)",
+      "Bash(\"C:\\\\Program Files\\\\Python310\\\\Scripts\\\\alembic.exe\" upgrade head)"
+    ]
+  }
+}

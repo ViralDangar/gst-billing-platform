@@ -47,8 +47,16 @@ def create_company(db: Session, payload: CompanyCreate) -> Company:
             id=uuid.uuid4(),
             name=payload.name,
             address=payload.address,
-            logo_url=payload.logo_url,
-            default_bank_details=payload.default_bank_details,
+            city=payload.city,
+            state=payload.state,
+            pincode=payload.pincode,
+            mobile_number=payload.mobile_number,
+            email_id=payload.email_id,
+            bank_name=payload.bank_name,
+            bank_branch=payload.bank_branch,
+            account_holder_name=payload.account_holder_name,
+            account_number=payload.account_number,
+            ifsc_code=payload.ifsc_code,
         )
 
         db.add(company)
@@ -255,4 +263,63 @@ def count_gstins(db: Session, company_id) -> int:
         raise
     except Exception as e:
         logger.error(f"Unexpected error counting GSTINs: {str(e)}")
+        raise
+
+
+def get_company_with_gstin(db: Session):
+    """
+    Get company details with first GSTIN and flattened bank details for UI.
+
+    This returns a combined response matching the UI form structure.
+
+    Args:
+        db: Database session
+
+    Returns:
+        dict: Combined company and GSTIN data
+
+    Raises:
+        SQLAlchemyError: If database operation fails
+    """
+    try:
+        company = db.query(Company).first()
+        if not company:
+            return None
+
+        # Get first GSTIN if available
+        first_gstin = db.query(GSTIN).filter(GSTIN.company_id == company.id).first()
+
+        # Build combined response
+        result = {
+            "id": company.id,
+            "name": company.name,
+            "address": company.address,
+            "city": company.city,
+            "state": company.state or (first_gstin.state_code if first_gstin else None),
+            "pincode": company.pincode,
+            "mobile_number": company.mobile_number,  # UI uses 'phone'
+            "email_id": company.email_id,  # UI uses 'email'
+
+            # GSTIN fields
+            "gstin": first_gstin.gst_number if first_gstin else None,
+            "pan": first_gstin.gst_number[2:12] if first_gstin else None,  # Extract PAN from GSTIN
+
+            # Bank details (from individual columns)
+            "bank_name": company.bank_name,
+            "bank_branch": company.bank_branch,
+            "account_holder_name": company.account_holder_name,
+            "account_number": company.account_number,
+            "ifsc_code": company.ifsc_code,
+
+            "created_at": company.created_at
+        }
+
+        logger.info(f"Retrieved company with GSTIN details: {company.id}")
+        return result
+
+    except SQLAlchemyError as e:
+        logger.error(f"Database error retrieving company with GSTIN: {str(e)}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error retrieving company with GSTIN: {str(e)}")
         raise

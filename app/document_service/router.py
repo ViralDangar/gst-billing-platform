@@ -29,6 +29,7 @@ def invoice_preview(invoice_id: UUID, db: Session = Depends(get_db)):
 def invoice_pdf(invoice_id: UUID, db: Session = Depends(get_db)):
     try:
         invoice_data = get_invoice_preview(db, invoice_id)
+        print("invoice_data",invoice_data)
         pdf_bytes = generate_invoice_pdf(invoice_data)
 
         return StreamingResponse(
@@ -38,5 +39,15 @@ def invoice_pdf(invoice_id: UUID, db: Session = Depends(get_db)):
                 "Content-Disposition": f"inline; filename=invoice_{invoice_id}.pdf"
             },
         )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+
+
+@router.get("/invoices/{invoice_id}/review")
+def invoice_pdf(invoice_id: UUID, db: Session = Depends(get_db)):
+    try:
+        return get_invoice_preview(db, invoice_id)
+      
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
