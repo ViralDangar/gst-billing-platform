@@ -6,3 +6,8 @@ alembic
 pydantic-settings
 python-dotenv
 reportlab
+passlib[bcrypt]
+bcrypt==4.0.1
+python-jose[cryptography]
+python-multipart
+email-validator

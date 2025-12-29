@@ -22,6 +22,8 @@ from app.identity_service.schemas import (
     GSTINCreate,
     GSTINResponse,
 )
+from app.auth_service.middleware import get_current_user
+from app.auth_service.models import User
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -42,7 +44,11 @@ def identity_health():
     response_model=CompanyResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def create_company(payload: CompanyCreate, db: Session = Depends(get_db)):
+def create_company(
+    payload: CompanyCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     """
     Create a new company.
 
@@ -86,7 +92,10 @@ def create_company(payload: CompanyCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/company", response_model=CompanyResponse)
-def get_company(db: Session = Depends(get_db)):
+def get_company(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     """
     Retrieve the company.
 

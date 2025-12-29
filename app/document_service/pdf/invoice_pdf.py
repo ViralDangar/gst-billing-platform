@@ -212,7 +212,10 @@ def generate_invoice_pdf(invoice_data):
         'Small', parent=styles['Normal'], fontSize=7, leading=9
     )
     style_small_bold = ParagraphStyle(
-        'SmallBold', parent=styles['Normal'], fontSize=7, fontName='Helvetica-Bold', leading=9
+        'SmallBold', parent=styles['Normal'], fontSize=9, fontName='Helvetica-Bold', leading=9
+    )
+    style_title_bold = ParagraphStyle(
+        'SmallBold', parent=styles['Normal'], fontSize=11, fontName='Helvetica-Bold', leading=9
     )
     style_footer_right = ParagraphStyle(
         'FooterRight', parent=styles['Normal'], alignment=TA_RIGHT, fontSize=8, leading=10
@@ -235,14 +238,12 @@ def generate_invoice_pdf(invoice_data):
     s_gst = safe_get(invoice_data, 'seller_gstin')
     s_state = safe_get(invoice_data, 'seller_state')
     s_bank = safe_get(invoice_data, 'seller_bank_details')
-    
-    # Parse bank details if available
-    bank_name = ""
-    bank_branch = ""
-    bank_ac = ""
-    bank_ifsc = ""
-    if s_bank:
-        bank_name = s_bank
+    bank_name = safe_get(s_bank, 'bank_name')
+    bank_branch = safe_get(s_bank, 'bank_branch')
+    bank_ac = safe_get(s_bank, 'account_number')
+    bank_ifsc = safe_get(s_bank, 'ifsc_code')
+
+
     
     b_name = safe_get(invoice_data, 'customer_name')
     b_addr = safe_get(invoice_data, 'customer_address')
@@ -251,6 +252,7 @@ def generate_invoice_pdf(invoice_data):
 
     inv_no = safe_get(invoice_data, 'invoice_number')
     inv_date = invoice_data.get('invoice_date')
+    po_no=invoice_data.get("po_number")
     if inv_date:
         if hasattr(inv_date, 'strftime'):
             inv_date = inv_date.strftime('%d/%m/%Y')
@@ -263,8 +265,8 @@ def generate_invoice_pdf(invoice_data):
     header_content_data = [
         [Paragraph("<b><u>TAX INVOICE</u></b>", style_title)],
         [Paragraph("<b>Subject to Mumbai Jurisdiction</b>", style_subtitle)],
-        # [Spacer(1, 2 * mm)],
         [Paragraph(f"<b>{s_name}</b>", style_company_name)],
+              [Spacer(1, 2 * mm)],    
         [Paragraph(s_addr, style_center)],
     ]
 
@@ -307,7 +309,7 @@ def generate_invoice_pdf(invoice_data):
     inv_detail_data = [
         [Paragraph(f"<b>Invoice No.: {inv_no} </b>", style_left)],
         [Paragraph(f"<b>Date &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp .: {inv_date} </b>", style_left)],
-        [Paragraph(f"<b>P.O. No &nbsp&nbsp&nbsp .: {inv_date}</b>", style_left)],
+        [Paragraph(f"<b>P.O. No &nbsp&nbsp&nbsp .: {po_no}</b>", style_left)],
 
         # [Paragraph("", style_left), Paragraph("", style_left)],
         [Paragraph(f"<b>State Code.: {s_state}</b>", style_left), Paragraph("", style_left)],
@@ -565,7 +567,8 @@ def generate_invoice_pdf(invoice_data):
 
     # ================= 6. FOOTER =================
     terms_content = [
-        Paragraph("<b>Terms &amp; Conditions</b>", style_small_bold),
+        Paragraph("<b>Terms &amp; Conditions</b>", style_title_bold),
+        Spacer(1, 1 * mm),    
         Paragraph("● Goods Once sold will not be taken back or exchanged.", style_small),
         Paragraph(f"● A/c payee cheques to be drawn in favour of", style_small),
         Paragraph(f"   {s_name}", style_small),
@@ -576,11 +579,15 @@ def generate_invoice_pdf(invoice_data):
     ]
 
     bank_content = [
-        Paragraph("<b>Bank Details</b>", style_small_bold),
-        Paragraph(f"Bank Name : {bank_name}", style_small),
-        Paragraph(f"Branch       : {bank_branch}", style_small),
-        Paragraph(f"Account No.: {bank_ac}", style_small),
-        Paragraph(f"IFSC Code  : {bank_ifsc}", style_small),
+        Paragraph("<b>Bank Details</b>", style_title_bold),
+        Spacer(1, 2 * mm),    
+        Paragraph(f"Bank Name : {bank_name}", style_small_bold),
+        Spacer(1, 1 * mm),    
+        Paragraph(f"Branch       : {bank_branch}", style_small_bold),
+        Spacer(1, 1 * mm),    
+        Paragraph(f"Account No.: {bank_ac}", style_small_bold),
+        Spacer(1, 1 * mm),    
+        Paragraph(f"IFSC Code  : {bank_ifsc}", style_small_bold),
     ]
 
     sig_content = [
@@ -599,7 +606,7 @@ def generate_invoice_pdf(invoice_data):
         ('LEFTPADDING', (0, 0), (-1, -1), 8),
         ('RIGHTPADDING', (0, 0), (-1, -1), 8),
         ('LINEBEFORE', (1, 0), (1, 0), 0.5, colors.black),  # Vertical line between buyer and invoice
-
+        ('LINEAFTER', (1, 0), (1, 0), 0.5, colors.black),   # Vertical line after Bank Details
     ]))
     
     footer_box = RoundedTable(footer_table, radius=8)

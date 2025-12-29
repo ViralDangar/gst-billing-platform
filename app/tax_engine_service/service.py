@@ -65,12 +65,16 @@ def calculate_gst(db: Session, invoice_id: UUID):
 
         # Fetch seller GSTIN
         seller_gstin = db.query(GSTIN).filter(GSTIN.id == invoice.gstin_id).first()
+        print("seller_gstin",seller_gstin.__dict__)
         if not seller_gstin:
             logger.error(f"Seller GSTIN not found: {invoice.gstin_id}")
             raise ValueError("Seller GSTIN not found")
 
         # Fetch customer
         customer = db.query(Customer).filter(Customer.id == invoice.customer_id).first()
+        print("customer",customer.__dict__)
+        
+
         if not customer:
             logger.error(f"Customer not found: {invoice.customer_id}")
             raise ValueError("Customer not found")
@@ -99,7 +103,7 @@ def calculate_gst(db: Session, invoice_id: UUID):
         tax_total = Decimal("0.00")
 
         # Determine transaction type (intra-state vs inter-state)
-        same_state = seller_gstin.state_code == customer.state[:2]
+        same_state = seller_gstin.state_code == customer.gstin[:2]
         logger.info(f"Transaction type: {'Intra-state (CGST+SGST)' if same_state else 'Inter-state (IGST)'}")
 
         # Calculate tax for each item

@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.auth_service.router import router as auth_router
 from app.identity_service.router import router as identity_router
-from app.master_data_service.router import product_router as product_router 
-from app.master_data_service.router import customer_router as customer_router 
+from app.master_data_service.router import product_router as product_router
+from app.master_data_service.router import customer_router as customer_router
 from app.billing_service.router import router as billing_router
 from app.accounting_service.router import router as accounting_router
 from app.document_service.router import router as documents_router
@@ -18,6 +19,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
     allow_headers=["*"],  # Allow all headers
+    expose_headers=["Content-Disposition"],  # Expose Content-Disposition for file downloads
 )
 
 @app.get("/health")
@@ -26,6 +28,7 @@ def health_check():
 
 
 # Register routers
+app.include_router(auth_router)  # Authentication routes (public)
 app.include_router(identity_router)
 app.include_router(product_router)
 app.include_router(customer_router)

@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 
 class Settings(BaseSettings):
@@ -10,6 +11,11 @@ class Settings(BaseSettings):
     db_name: str
     db_user: str
     db_password: str
+
+    # Authentication settings
+    secret_key: str = "your-secret-key-change-in-production-min-32-chars"
+    access_token_expire_minutes: int = 30
+    refresh_token_expire_days: int = 7
 
     @property
     def database_url(self) -> str:
